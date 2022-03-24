@@ -4,11 +4,15 @@ import { useTracker } from "meteor/react-meteor-data";
 import { Task } from "./Task";
 import { TaskForm } from "./TaskForm";
 
-const tasks = [
-  { _id: 1, text: "First Task" },
-  { _id: 2, text: "Second Task" },
-  { _id: 3, text: "Third Task" },
-];
+const toggleChecked = ({ _id, isChecked }) => {
+  TaskCollection.update(_id, {
+    $set: {
+      isChecked: !isChecked,
+    },
+  });
+};
+
+const deleteTask = ({ _id }) => TaskCollection.remove(_id);
 
 export const App = () => {
   const tasks = useTracker(() =>
@@ -22,7 +26,12 @@ export const App = () => {
 
       <ul>
         {tasks.map((task) => (
-          <Task key={task._id} task={task} />
+          <Task
+            key={task._id}
+            task={task}
+            onCheckboxClick={toggleChecked}
+            onDeleteClick={deleteTask}
+          />
         ))}
       </ul>
     </div>
